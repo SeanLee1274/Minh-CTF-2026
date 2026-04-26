@@ -1,4 +1,4 @@
-# CTF-Team-2-2026 \n
+# CTF-Team-2-2026 
 __Useful command for Red Team__
 #See Processes running
 ps aux | grep hping3 | grep -v grep | wc -l
