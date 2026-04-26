@@ -190,3 +190,22 @@ $IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp -d 10.1.5.2 --dport 80 \
   -m hashlimit --hashlimit-name HTTP --hashlimit-mode srcip --hashlimit-srcmask 24 \
   --hashlimit-above 5/second --hashlimit-burst 10 --hashlimit-htable-expire 60000 -j DROP
 
+# Block common HTTP DoS User-Agents
+$IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp -d 10.1.5.2 --dport 80 \
+  -m string --string "AB_testing" --algo bm -j DROP
+$IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp -d 10.1.5.2 --dport 80 \
+  -m string --string "DDoS" --algo bm -j DROP
+$IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp -d 10.1.5.2 --dport 80 \
+  -m string --string "slowhttptest" --algo bm -j DROP
+
+######################### CHECK THIS ONE IT ALLOWS LOTS ###############################
+# Global Rate limiting
+$IPTABLES -A FORWARD -i $RETH -o $SETH -m limit --limit 50/s --limit-burst 2000 -j ACCEPT
+$IPTABLES -A FORWARD -i $RETH -o $SETH -j DROP
+
+# Activate log of dropped packets for debugging
+$IPTABLES -A INPUT -j LOG --log-prefix "FW-INPUT-DROP: " --log-level 7
+$IPTABLES -A FORWARD -j LOG --log-prefix "FW-FORWARD-DROP: " --log-level 7
+
+echo "done."
+
