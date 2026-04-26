@@ -1,18 +1,30 @@
-alert tcp any any -> any 80 (msg:"Possible TCP flood"; \
+
+alert tcp any any -> $HOME_NET 80 (msg:"Possible TCP flood"; \
 detection_filter:track by_src, count 50, seconds 1; \
 sid:1000001;)
 
-alert tcp any any -> any 80 (flags:A; msg:"Possible ACK flood"; \
-detection_filter:track by_src, count 50, seconds 1; \
-sid:1000004;)
-
-
-alert icmp any any -> any any (msg:"Possible Ping flood"; \
-itype:8; \
+alert tcp any any -> $HOME_NET 80 (flags:A; msg:"Possible ACK flood"; \
 detection_filter:track by_src, count 50, seconds 1; \
 sid:1000002;)
 
-alert udp any any -> any [53,123,1761,67:68,50:4500] (msg:"Possible UDP flood"; \
-flow:stateless; \
+alert icmp any any -> $HOME_NET any (msg:"Possible Ping flood"; \
+itype:8; \
 detection_filter:track by_src, count 50, seconds 1; \
 sid:1000003;)
+
+alert http any any -> $HOME_NET 80 (msg:"HTTP Request Flood";
+flow:to_server,established;
+detection_filter:track by_src, count 50, seconds 1;
+sid:1000004;)
+
+
+alert udp any any -> $HOME_NET [53,123,1761,67:68,50:4500] (msg:"Possible UDP flood"; \
+flow:stateless; \
+detection_filter:track by_src, count 50, seconds 1; \
+sid:1000005;)
+
+
+
+
+
+
