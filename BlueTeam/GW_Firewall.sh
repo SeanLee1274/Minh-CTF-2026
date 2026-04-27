@@ -1,4 +1,5 @@
-!/bin/bash
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        C_Firewall.sh                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+#!/bin/bash
 
 echo -n "Starting firewall: "
 IPTABLES="/sbin/iptables"
@@ -47,14 +48,12 @@ $IPTABLES -A VALID_CLIENTS -j DROP
 # Apply to traffic going to server
 $IPTABLES -A FORWARD -i $RETH -o $SETH -d 10.1.5.2 -j VALID_CLIENTS
 
-
 # Drop truly malformed packets
 $IPTABLES -A INPUT   -m conntrack --ctstate INVALID   -j DROP
 $IPTABLES -A FORWARD -m conntrack --ctstate INVALID   -j DROP
 # Make sure no fragmented packets
 $IPTABLES -A INPUT -f -j DROP
-$IPTABLES -A FORWARD -f -j DROP
-
+$IPTABLES -A FORWARD -f -j DROP                                                                                                                                                                                                                                                                                                                                                                                                                                                            C_Firewall.sh                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
 # Port-scan / malformed TCP drops
 $IPTABLES -A FORWARD -i $RETH -o $SETH \
@@ -75,6 +74,8 @@ $IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp --tcp-flags ACK,URG URG -j DROP
 $IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp --tcp-flags ACK,FIN FIN -j DROP
 $IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp --tcp-flags ACK,PSH PSH -j DROP
 
+# Limit http connections for each ip; protect from slow http
+$IPTABLES -A FORWARD -i $RETH -o $SETH -p tcp -d 10.1.5.2 --dport 80 -m connlimit --connlimit-above 8 --connlimit-mask 32 -j DROP
 
 # Allow established/related in both chains
 # moved line 123 here
@@ -208,4 +209,3 @@ $IPTABLES -A INPUT -j LOG --log-prefix "FW-INPUT-DROP: " --log-level 7
 $IPTABLES -A FORWARD -j LOG --log-prefix "FW-FORWARD-DROP: " --log-level 7
 
 echo "done."
-
