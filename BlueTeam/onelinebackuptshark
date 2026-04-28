@@ -1,0 +1,2 @@
+sudo tshark -l -i eth1 -n \
+-Y "tcp.flags.syn==1 || http.request || icmp.type==8 || udp"
