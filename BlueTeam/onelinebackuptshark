@@ -1,2 +1,13 @@
 sudo tshark -l -i eth1 -n \
 -Y "tcp.flags.syn==1 || http.request || icmp.type==8 || udp"
+
+
+#incase more technical info is needed
+sudo tshark -l -i eth1 -n \
+-Y "
+(tcp.flags.syn==1 && tcp.flags.ack==0) || 
+tcp.flags.fin==1 || 
+tcp.flags.reset==1 || 
+http.request || 
+icmp || 
+udp.port==53 || udp.port==123 || udp.port==1900
