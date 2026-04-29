@@ -4,7 +4,7 @@ sudo apt-get install hping3
 echo "Done installing hping3"
 echo "======================================="
 echo "installing slowhttptest"
-sudo ap-get install slowhttptest
+sudo apt-get install slowhttptest
 echo "Done installing slowhttptest"
 echo "======================================="
 echo "installing slowloris"
