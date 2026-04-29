@@ -35,4 +35,4 @@ done
 
 echo ""
 echo "Download complete! Files are in the Attacks directory."
-ls -lh
+cd Attacks
