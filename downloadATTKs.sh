@@ -26,10 +26,10 @@ for file in "${FILES[@]}"; do
     curl -sS -O "$BASE_URL/$file"
     
     if [ $? -eq 0 ]; then
-        echo "✓ $file downloaded"
+        echo "$file downloaded"
         chmod +x "$file"
     else
-        echo "✗ Failed to download $file"
+        echo "Failed to download $file"
     fi
 done
 
